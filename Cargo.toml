@@ -10,3 +10,4 @@ name = "garden"
 path = "src/main.rs"
 
 [dependencies]
+color-eyre = "0.6.0"
