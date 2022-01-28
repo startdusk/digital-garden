@@ -1,5 +1,5 @@
 [package]
-name = "digital-garden"
+name = "garden-write"
 version = "0.1.0"
 edition = "2021"
 
@@ -11,3 +11,7 @@ path = "src/main.rs"
 
 [dependencies]
 color-eyre = "0.6.0"
+structopt = "0.3.26"
+
+[dev-dependencies]
+assert_cmd = "2.0.4"
