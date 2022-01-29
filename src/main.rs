@@ -1,4 +1,9 @@
-use color_eyre::eyre::Result;
+use directories::UserDirs;
+use std::{fs, path::PathBuf};
+
+use digital_garden::write;
+
+use color_eyre::eyre::{eyre, Result, WrapErr};
 use structopt::StructOpt;
 
 /// A CLI for the growing and curation of a digital garden
@@ -6,6 +11,9 @@ use structopt::StructOpt;
 /// Visit https://www.rustadventure.rs/garden for more!
 #[derive(StructOpt, Debug)]
 struct Opt {
+    #[structopt(parse(from_os_str), short = "p", long, env)]
+    garden_path: Option<PathBuf>,
+
     #[structopt(subcommand)]
     cmd: Command,
 }
@@ -18,14 +26,27 @@ enum Command {
     /// to write something, and then save the file to your
     /// garden
     Write {
+        /// Optionally set a title for what you are going to write about title
         #[structopt(short, long)]
         title: Option<String>,
     },
 }
 
+fn get_default_garden() -> Result<PathBuf> {
+    let user_dirs = UserDirs::new().ok_or_else(|| eyre!("Colud not find home directory"))?;
+
+    Ok(user_dirs.home_dir().join(".garden"))
+}
+
 fn main() -> Result<()> {
     color_eyre::install()?;
     let opt = Opt::from_args();
-    dbg!(opt);
-    todo!();
+    let garden_path = match opt.garden_path {
+        Some(pathbuf) => Ok(pathbuf),
+        None => get_default_garden().wrap_err("`garden_path` was not supplied"),
+    }?;
+    fs::create_dir_all(&garden_path)?;
+    match opt.cmd {
+        Command::Write { title } => write(garden_path, title),
+    }
 }

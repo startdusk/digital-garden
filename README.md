@@ -5,6 +5,14 @@ Gardens.
 
 ## Commands
 
+### Setting the garden path
+
+```shell
+GARDEN_PATH=~/path/to/my-digital-garden garden write
+graden -p ~/path/to/my-digital-garden write
+garden --garden_path=~/path/to/my-digital-garden write
+```
+
 ### write
 
 Open a new file to write in our digital garden. Since we
